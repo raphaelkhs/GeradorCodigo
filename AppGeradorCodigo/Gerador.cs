@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace AppGeradorCodigo
 {
-    public partial class Form1 : Form
+    public partial class Gerador : Form
     {
-        public Form1()
+        public Gerador()
         {
             InitializeComponent();
         }

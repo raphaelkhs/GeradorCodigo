@@ -1,7 +1,7 @@
 ﻿
 namespace AppGeradorCodigo
 {
-    partial class Form1
+    partial class Gerador
     {
         /// <summary>
         /// Variável de designer necessária.
