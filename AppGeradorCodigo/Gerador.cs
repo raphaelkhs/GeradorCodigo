@@ -24,55 +24,134 @@ namespace AppGeradorCodigo
 
         private void btnGerar_Click(object sender, EventArgs e)
         {
-            //check se os txt tao vazio
-            if (!String.IsNullOrEmpty(txtQtd.Text) && !String.IsNullOrEmpty(txtTamanho.Text))
+
+            //verificar se algum dos checks estão selecionados
+            if (checkMaiscula.Checked || checkMinusculas.Checked || checkNumeros.Checked || checkCaracteres.Checked)
             {
+                //check se os txt tao vazio
+                if (!String.IsNullOrEmpty(txtQtd.Text) && !String.IsNullOrEmpty(txtTamanho.Text))
+                {                    
+                    int tamanho = int.Parse(txtTamanho.Text);
+                    int qtd = int.Parse(txtQtd.Text);
+                    string caracteres = "";
+                    int qtdgerada = 0;
 
+                    if (checkMaiscula.Checked)
+                        caracteres += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-                listBox1.Items.Clear();
+                    else if (checkMinusculas.Checked)
+                        caracteres += "abcdefghijklmnopqrstuvwxyz";
 
-                int tamanho = int.Parse(txtTamanho.Text);
-                int qtd = int.Parse(txtQtd.Text);
-                string caracteres = "";
-                int qtdgerada = 0;
+                    else if (checkNumeros.Checked)
+                        caracteres += "1234567890";
 
-                if (checkMaiscula.Checked)
-                {
-                    caracteres += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                }
+                    else if (checkCaracteres.Checked)
+                        caracteres += "!@#$%&";
 
-                if (checkMinusculas.Checked)
-                {
-                    caracteres += "abcdefghijklmnopqrstuvwxyz";
-                }
-
-                if (checkNumeros.Checked)
-                {
-                    caracteres += "1234567890";
-                }
-
-                if (checkCaracteres.Checked)
-                {
-                    caracteres += "!@#$%&";
-                }
-
-                var random = new Random();
-                for (int i = 0; i < qtd; i++)
-                {
-                    string result = new string(Enumerable.Repeat(caracteres, tamanho).Select(s => s[random.Next(s.Length)]).ToArray());
-                    if (listBox1.FindString(result) == -1)
+                    //apenas prefixo selecionado
+                    if (checkPrefixo.Checked && !String.IsNullOrEmpty(txtPrefixo.Text) && !checkSufixo.Checked)
                     {
-                        listBox1.Items.Add(result);
-                        qtdgerada++;
+                        //verificar se o prefixo é menor que o tamanho total atribuido
+                        if (txtPrefixo.TextLength < tamanho)
+                        {
+                            listBox1.Items.Clear();
+                            int tamprefixo = txtPrefixo.TextLength;
+                            string prefixo = txtPrefixo.Text;
+                            var random = new Random();
+                            for (int i = 0; i < qtd; i++)
+                            {
+                                string result = new string(Enumerable.Repeat(caracteres, (tamanho - tamprefixo)).Select(s => s[random.Next(s.Length)]).ToArray());
+                                if (listBox1.FindString(result) == -1)
+                                {
+                                    listBox1.Items.Add(prefixo + result);
+                                    qtdgerada++;
+                                }
+                                result = "";
+                            }
+                        }
+                        else
+                            MessageBox.Show("O prefixo tem que ser menor que o tamanho total, e não pode estar em branco", "Alerta Vermelho!");
                     }
-                    result = "";
+                    //apenas sufixo selecionado
+                    else if (checkSufixo.Checked && !String.IsNullOrEmpty(txtSufixo.Text) && !checkPrefixo.Checked)
+                    {
+                        //verificar se o sufixo é menor que o tamanho total atribuido
+                        if (txtSufixo.TextLength < tamanho)
+                        {
+                            listBox1.Items.Clear();
+                            int tamsufixo = txtSufixo.TextLength;
+                            string sufixo = txtSufixo.Text;
+                            var random = new Random();
+                            for (int i = 0; i < qtd; i++)
+                            {
+                                string result = new string(Enumerable.Repeat(caracteres, (tamanho - tamsufixo)).Select(s => s[random.Next(s.Length)]).ToArray());
+                                if (listBox1.FindString(result) == -1)
+                                {
+                                    listBox1.Items.Add(result + sufixo);
+                                    qtdgerada++;
+                                }
+                                result = "";
+                            }
+                        }
+                        else
+                            MessageBox.Show("O sufixo tem que ser menor que o tamanho total, e não pode estar em branco", "Alerta Vermelho!");
+                    }
+                    //Sufixo e prefixo selecionado
+                    else if (checkSufixo.Checked && !String.IsNullOrEmpty(txtSufixo.Text) && checkPrefixo.Checked && !String.IsNullOrEmpty(txtPrefixo.Text))
+                    {
+                        //verificar se a soma do prefixo com o sufixo é menor que o tamanho total atribuido
+                        if ((txtPrefixo.TextLength + txtSufixo.TextLength) < tamanho)
+                        {
+                            listBox1.Items.Clear();
+                            int tamsomasufixoeprefixo = txtSufixo.TextLength + txtPrefixo.TextLength;
+                            string sufixo = txtSufixo.Text;
+                            string prefixo = txtPrefixo.Text;
+
+                            var random = new Random();
+                            for (int i = 0; i < qtd; i++)
+                            {
+                                string result = new string(Enumerable.Repeat(caracteres, (tamanho - tamsomasufixoeprefixo)).Select(s => s[random.Next(s.Length)]).ToArray());
+                                if (listBox1.FindString(result) == -1)
+                                {
+                                    listBox1.Items.Add(prefixo + result + sufixo);
+                                    qtdgerada++;
+                                }
+                                result = "";
+                            }
+                        }
+                        else
+                            MessageBox.Show("A soma do tamanho do prefixo e do sufixo tem que ser menor que o tamanho total, e não podem estar em branco", "Alerta Vermelho!");
+                    }
+                    //SEM PREFIXO E SUFIXO
+                    else if (!checkPrefixo.Checked && !checkSufixo.Checked)
+                    {    
+                        var random = new Random();
+                        for (int i = 0; i < qtd; i++)
+                        {
+                            listBox1.Items.Clear();
+                            string result = new string(Enumerable.Repeat(caracteres, tamanho).Select(s => s[random.Next(s.Length)]).ToArray());
+                            if (listBox1.FindString(result) == -1)
+                            {
+                                listBox1.Items.Add(result);
+                                qtdgerada++;
+                            }
+                            result = "";
+                        }                        
+                    }
+                    //Estão ambos selecionados mas um está sem texto
+                    else
+                    {
+                        MessageBox.Show("Os campos de Prefixo e Sufixo não podem estar em branco", "Alerta vermelho!");
+                    }
+                    lblQtd.Text = qtdgerada.ToString();
                 }
-                lblQtd.Text = qtdgerada.ToString();
+                else
+                {
+                    MessageBox.Show("Verifique se os textbox de quantidade e tamanho estão preenchidos.", "Alerta Vermelho!");
+                }
             }
             else
-            {
-                MessageBox.Show("Verifique se os textbox de quantidade e tamanho estão preenchidos.", "Alerta Vermelho!");
-            }
+                MessageBox.Show("Selecione o tipo dos caracteres do código", "Alerta Vermelho!");
         }
 
         private void btnCopiar_Click(object sender, EventArgs e)
@@ -91,8 +170,7 @@ namespace AppGeradorCodigo
             }
 
             else            
-                MessageBox.Show("A lista está vazia!", "Alerta Vermelho!");
-            
+                MessageBox.Show("A lista está vazia!", "Alerta Vermelho!");            
         }
 
         private void btnApagar_Click(object sender, EventArgs e)
@@ -104,19 +182,33 @@ namespace AppGeradorCodigo
         private void txtTamanho_KeyPress(object sender, KeyPressEventArgs e)
         {
             //txt apenas numeros
-            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)8)
-            {
-                e.Handled = true;
-            }
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)8)            
+                e.Handled = true;            
         }
 
         private void txtQtd_KeyPress(object sender, KeyPressEventArgs e)
         {
             //txt apenas numeros
             if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)8)
-            {
                 e.Handled = true;
-            }
+        }
+
+        private void checkPrefixo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkPrefixo.Checked)
+                txtPrefixo.Visible = true;
+
+            else            
+                txtPrefixo.Visible = false;            
+        }
+
+        private void checkSufixo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkSufixo.Checked)
+                txtSufixo.Visible = true;
+            
+            else            
+                txtSufixo.Visible = false;            
         }
     }
 }
