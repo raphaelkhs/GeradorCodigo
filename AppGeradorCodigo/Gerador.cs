@@ -39,13 +39,13 @@ namespace AppGeradorCodigo
                     if (checkMaiscula.Checked)
                         caracteres += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-                    else if (checkMinusculas.Checked)
+                    if (checkMinusculas.Checked)
                         caracteres += "abcdefghijklmnopqrstuvwxyz";
 
-                    else if (checkNumeros.Checked)
+                    if (checkNumeros.Checked)
                         caracteres += "1234567890";
 
-                    else if (checkCaracteres.Checked)
+                    if (checkCaracteres.Checked)
                         caracteres += "!@#$%&";
 
                     //apenas prefixo selecionado
